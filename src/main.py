@@ -33,29 +33,6 @@ register_auth(app)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'database', 'db.sqlite')
 
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db():
-    with get_db() as conn:
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS inventory (
-                id         INTEGER PRIMARY KEY AUTOINCREMENT,
-                name       TEXT    NOT NULL,
-                type       TEXT,
-                serial     TEXT    UNIQUE,
-                status     TEXT    DEFAULT 'В работе',
-                department TEXT,
-                created_at TEXT    DEFAULT (datetime('now', 'localtime'))
-            )
-        ''')
-        conn.commit()
-
-init_db()
-
-
 @app.route('/')
 def index():
     with get_db() as conn:
