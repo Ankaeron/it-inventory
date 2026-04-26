@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from inventory import register_routes
+from auth import register_auth
 import sqlite3
 import os
 
@@ -27,8 +28,8 @@ def init_db():
         conn.commit()
 
 init_db()
-register_routes(app)  # подключаем маршруты из inventory.py
-
+register_routes(app)
+register_auth(app)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'database', 'db.sqlite')
 
@@ -57,12 +58,6 @@ init_db()
 
 @app.route('/')
 def index():
-<<<<<<< HEAD
-    return jsonify({
-        "app": "Система учёта компьютерной техники",
-        "version": "1.0.0",
-        "status": "ok"
-=======
     with get_db() as conn:
         total = conn.execute('SELECT COUNT(*) FROM inventory').fetchone()[0]
         in_use = conn.execute("SELECT COUNT(*) FROM inventory WHERE status = 'В работе'").fetchone()[0]
@@ -76,7 +71,6 @@ def index():
             "on_repair": on_repair,
             "other": total - in_use - on_repair,
         }
->>>>>>> feature/inventory-module
     })
 
 
